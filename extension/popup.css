@@ -55,6 +55,7 @@ button:hover {
     margin-bottom: 5px;
     padding: 5px;
     border-radius: 3px;
+    white-space: pre-wrap; /* Preserve whitespace and line breaks */
 }
 
 .chat-message.user {

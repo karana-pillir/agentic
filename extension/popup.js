@@ -4,13 +4,22 @@ document.addEventListener('DOMContentLoaded', function () {
     const chatHistoryDiv = document.getElementById('chatHistory');
     const responseOutput = document.getElementById('responseOutput');
 
+    // Function to convert basic markdown to HTML
+    function convertMarkdownToHtml(markdownText) {
+        // Bold: **text** -> <strong>text</strong>
+        let html = markdownText.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        // Basic line breaks are already handled by white-space: pre-wrap; but this can add more if needed
+        // html = html.replace(/\n/g, '<br>');
+        return html;
+    }
+
     // Function to render chat history
     function renderChatHistory(history) {
         chatHistoryDiv.innerHTML = ''; // Clear existing history
         history.forEach(message => {
             const messageElement = document.createElement('div');
             messageElement.classList.add('chat-message', message.role);
-            messageElement.innerHTML = `<strong>${message.role.charAt(0).toUpperCase() + message.role.slice(1)}:</strong> ${message.parts[0].text}`;
+            messageElement.innerHTML = `<strong>${message.role.charAt(0).toUpperCase() + message.role.slice(1)}:</strong> ${convertMarkdownToHtml(message.parts[0].text)}`;
             chatHistoryDiv.appendChild(messageElement);
         });
         chatHistoryDiv.scrollTop = chatHistoryDiv.scrollHeight; // Scroll to bottom
