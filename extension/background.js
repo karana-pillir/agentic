@@ -1,7 +1,14 @@
-const MODEL_NAME = "gemini-1.5-flash";
+const MODEL_NAME = "gemini-2.5-flash";
 
 // Store conversation history in the background script
 let chatHistory = [];
+
+// Load chat history from local storage when the service worker starts
+chrome.storage.local.get(['geminiChatHistory'], function (result) {
+    if (result.geminiChatHistory) {
+        chatHistory = result.geminiChatHistory;
+    }
+});
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === "generateContent") {
@@ -16,8 +23,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
             // Add user's new prompt to history
             chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+            // Save updated history
+            chrome.storage.local.set({ 'geminiChatHistory': chatHistory });
 
-            // Prepare contents for the API call including history
             const contents = chatHistory;
 
             fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${API_KEY}`,
@@ -37,6 +45,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                     const geminiResponse = data.candidates[0].content.parts[0].text;
                     // Add Gemini's response to history
                     chatHistory.push({ role: "model", parts: [{ text: geminiResponse }] });
+                    // Save updated history
+                    chrome.storage.local.set({ 'geminiChatHistory': chatHistory });
                     sendResponse({ success: true, response: geminiResponse });
                 } else if (data.error) {
                     sendResponse({ success: false, error: data.error.message });
@@ -51,7 +61,14 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         return true; // Indicates an asynchronous response
     }
     if (request.action === "getChatHistory") {
-        sendResponse({ history: chatHistory });
+        // Fetch current history from local storage before sending
+        chrome.storage.local.get(['geminiChatHistory'], function (result) {
+            if (result.geminiChatHistory) {
+                sendResponse({ history: result.geminiChatHistory });
+            } else {
+                sendResponse({ history: [] });
+            }
+        });
         return true; // Indicates an asynchronous response
     }
 });
