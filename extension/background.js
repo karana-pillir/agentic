@@ -71,4 +71,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         });
         return true; // Indicates an asynchronous response
     }
+    if (request.action === "clearChat") {
+        chatHistory = []; // Clear in-memory history
+        chrome.storage.local.remove(['geminiChatHistory'], function () {
+            sendResponse({ success: true });
+        });
+        return true; // Indicates an asynchronous response
+    }
 });

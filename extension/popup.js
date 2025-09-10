@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     const promptInput = document.getElementById('promptInput');
     const generateButton = document.getElementById('generateButton');
+    const newChatButton = document.getElementById('newChatButton');
     const chatHistoryDiv = document.getElementById('chatHistory');
     const responseOutput = document.getElementById('responseOutput');
 
@@ -54,5 +55,17 @@ document.addEventListener('DOMContentLoaded', function () {
         } else {
             responseOutput.textContent = 'Please enter a prompt.';
         }
+    });
+
+    newChatButton.addEventListener('click', function () {
+        chrome.runtime.sendMessage({ action: "clearChat" }, function (response) {
+            if (response.success) {
+                chatHistoryDiv.innerHTML = ''; // Clear UI
+                responseOutput.textContent = 'New chat started.';
+                setTimeout(() => { responseOutput.textContent = ''; }, 2000);
+            } else {
+                responseOutput.textContent = 'Error clearing chat: ' + response.error;
+            }
+        });
     });
 });
