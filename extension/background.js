@@ -1,4 +1,4 @@
-const MODEL_NAME = "gemini-2.5-flash";
+const MODEL_NAME = "gemini-1.5-flash";
 
 // Store conversation history in the background script
 let chatHistory = [];
@@ -60,21 +60,20 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         });
         return true; // Indicates an asynchronous response
     }
+    if (request.action === "clearChat") {
+        chatHistory = []; // Clear in-memory history
+        chrome.storage.local.remove(['geminiChatHistory'], function () {
+            sendResponse({ success: true });
+        });
+        return true; // Indicates an asynchronous response
+    }
     if (request.action === "getChatHistory") {
-        // Fetch current history from local storage before sending
         chrome.storage.local.get(['geminiChatHistory'], function (result) {
             if (result.geminiChatHistory) {
                 sendResponse({ history: result.geminiChatHistory });
             } else {
                 sendResponse({ history: [] });
             }
-        });
-        return true; // Indicates an asynchronous response
-    }
-    if (request.action === "clearChat") {
-        chatHistory = []; // Clear in-memory history
-        chrome.storage.local.remove(['geminiChatHistory'], function () {
-            sendResponse({ success: true });
         });
         return true; // Indicates an asynchronous response
     }

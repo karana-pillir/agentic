@@ -17,7 +17,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         // Update chat history with user's new prompt
         chatHistory.push({ role: "user", parts: [{ text: prompt }] });
         chrome.storage.local.set({ 'geminiChatHistory': chatHistory });
-
+        console.log('hi baby');
         fetch(SERVER_URL, {
             method: "POST",
             headers: {
@@ -31,13 +31,26 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 })) // Send history excluding the current user prompt (already sent as prompt)
             }),
         })
-        .then(response => response.json())
+        .then(response => {
+            // Log the raw response text before attempting to parse as JSON
+            console.log('Raw server response:', response)
+            return response.text().then(text => {
+                console.log('Raw server response text:', text);
+                try {
+                    return JSON.parse(text);
+                } catch (e) {
+                    console.error('JSON parsing error:', e);
+                    throw new Error('Server returned non-JSON response: ' + text.substring(0, 100) + '...');
+                }
+            });
+        })
         .then(data => {
+            console.log('Parsed server response:', data);
             if (data.success) {
                 const geminiResponse = data.response;
-                chatHistory.push({ role: "model", parts: [{ text: gemini_response }] });
+                chatHistory.push({ role: "model", parts: [{ text: geminiResponse }] });
                 chrome.storage.local.set({ 'geminiChatHistory': chatHistory });
-                sendResponse({ success: true, response: gemini_response });
+                sendResponse({ success: true, response: geminiResponse });
             } else {
                 sendResponse({ success: false, error: data.error || "Unknown error from Python server." });
             }
