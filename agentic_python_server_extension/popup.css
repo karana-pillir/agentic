@@ -1,0 +1,91 @@
+body {
+    font-family: Arial, sans-serif;
+    width: 300px;
+    padding: 10px;
+}
+
+h1 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+textarea {
+    width: 95%;
+    height: 100px;
+    margin-bottom: 10px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    background-color: #007bff; /* A more modern blue */
+    color: white;
+    padding: 8px 12px; /* Reduced padding for smaller size */
+    border: none;
+    border-radius: 5px; /* Slightly more rounded corners */
+    cursor: pointer;
+    width: auto; /* Allow buttons to size based on content */
+    flex-grow: 1; /* Allow buttons to grow to fill space evenly */
+    font-size: 0.9em; /* Smaller font size */
+    transition: background-color 0.2s ease, transform 0.1s ease; /* Smooth transitions */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    transform: translateY(-1px); /* Slight lift effect */
+}
+
+button:active {
+    transform: translateY(0); /* Return to original position on click */
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between; /* Spreads buttons apart */
+    gap: 10px; /* Adds space between buttons */
+    margin-bottom: 10px;
+}
+
+.button-container button {
+    width: auto; /* Allow buttons to size based on content */
+    flex-grow: 1; /* Allow buttons to grow to fill space evenly */
+}
+
+#responseOutput {
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid #eee;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+    white-space: pre-wrap;
+}
+
+#chatHistory {
+    border: 1px solid #eee;
+    padding: 10px;
+    margin-top: 10px;
+    height: 150px; /* Fixed height for chat history */
+    overflow-y: auto; /* Enable scrolling */
+    background-color: #f9f9f9;
+    border-radius: 4px;
+}
+
+.chat-message {
+    margin-bottom: 5px;
+    padding: 5px;
+    border-radius: 3px;
+    white-space: pre-wrap; /* Preserve whitespace and line breaks */
+}
+
+.chat-message.user {
+    background-color: #e6f7ff; /* Light blue for user messages */
+    text-align: right;
+}
+
+.chat-message.model {
+    background-color: #f0f0f0; /* Light gray for model messages */
+    text-align: left;
+}
